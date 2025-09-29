@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios')
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
@@ -33,9 +34,19 @@ public_users.post("/register", (req,res) => {
 });
 
 // Get the book list available in the shop
-public_users.get('/',function (req, res) {
-  //Write your code here
-  res.send(JSON.stringify(books,null,4))
+public_users.get('/',async function (req, res) {
+
+    try {
+        const response = await axios.get('https://robld2002-5000.theianext-0-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai/')
+        let books = response.data
+        res.json(books)
+    } catch (error) {
+        console.log("Problem fetching data", error);
+        res.status(404).json({message: "Error fetching data",error: error.message})
+
+
+    }
+  
 });
 
 // Get book details based on ISBN
